@@ -1,75 +1,20 @@
 import base64
-from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status,permissions
+from rest_framework import status
 import requests
 from rest_framework.decorators import api_view
 from .models import VMs
-from rest_framework.response import Response
 from .serializers import VmSerializer
 
-# @api_view
-# class AuthVMView(APIView):
-#     # queryset = VMs.objects.all()
-#     # serializer_class = VmSerializer
-#    # logger.debug("Processing request")
-#     print("Hello, this message will be printed to the terminal.")
-#     def post(self, request):
-#         # Deserialize the request data
-#         #serializer = VmSerializer(data=request.data)
-#         #if serializer.is_valid():
-#             #vm_data = serializer.validated_data
+from dotenv import load_dotenv
+import os
 
-#                 # Call vSphere API to create VM
-#             permission_classes = [permissions.IsAuthenticated]
-#             vcenter_url = 'https://2226.ciscofreak.com/api/'
-#             username = 'administrator@vsphere.local'
-#             password = 'Time4work!'
-
-
-#             credentials = f"{username}:{password}"
-#             credentials_encoded = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
-
-#     # Create the headers with the Authorization header
-#             headers = {'Authorization': f'Basic {credentials_encoded}'}
-
-#         #header = {'Authorization': ' Basic base64encoded(username:password)'}
-#            # try:
-
-#             print(headers)
-#             response = requests.post(vcenter_url + 'session', headers=headers, verify=False)
-#             print (response)
-#             if response.status_code == 200:
-#                      return Response({'message': 'VM created successfully'}, status=status.HTTP_201_CREATED)
-#             else:
-#                     # Handle other status codes accordingly
-#                     return Response({'error': f'Error from vSphere API: {response.status_code}'},
-#                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         #     except Exception as e:
-        #         # Handle connection or other exceptions
-        #         return Response({'error': f'Exception while connecting to vSphere API: {str(e)}'},
-        #                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        # # else:
-        #     return Response({'error': 'Invalid input data'}, status=status.HTTP_400_BAD_REQUEST)
-# 
-
-
-# class Vm(APIView):
-#        def create():
-              
-
-
-
-
-# @api_view(['GET'])
-# def getData(request):
-#     users = MyUser.objects.all()
-#     users_serializer = MyUserSerializer(users, many=True)
-#     return Response(users_serializer.data)
-
+load_dotenv()
 
 @api_view(['POST'])    
 def create_vm(request):
+    print('Test')
     if request.method=='POST':
         data=request.data
         
@@ -78,39 +23,231 @@ def create_vm(request):
         serializer = VmSerializer(data=data)
         print(serializer)
 
-        vcenter_url = 'https://2226.ciscofreak.com/api/'
+        # username=os.environ.get('VSPHEREUSERNAME')
+        # password=os.environ.get('VSPHEREPASSWORD')
+        # api_host=os.environ.get('API_HOST')
+        api_host = '192.168.0.251'
         username = 'administrator@vsphere.local'
         password = 'Time4work!'
+        data=request.data
+        print(data)
+      
+        url=f'https://{api_host}/rest/vcenter/vm'
+       
+        data=request.data
         credentials = f"{username}:{password}"
         credentials_encoded = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
 
         headers = {'Authorization': f'Basic {credentials_encoded}'}
-        response = requests.post(vcenter_url + 'session', verify=False)
-        print(response.json())
+        # response = requests.post(url ,headers=headers,data=data, verify=False)
+        # print(response.json())
+
+        # print(response.status_code)
         if serializer.is_valid():
+            response = requests.post(url ,headers=headers,data=data, verify=False)
+            print(response.json())
             serializer.save()
             return Response(serializer.data)
     return Response("Errrro")
 
 
-# @api_view(['PUT'])    
-# def update_user(request, id):
-#     if request.method=='PUT':
-#         data=request.data
-#         user_obj = MyUser.objects.get(id=id)
-#         serializer = MyUserSerializer(user_obj, data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
+       
+# #################Create vm #################################
+# @api_view(['POST'])    
+# def create_vm(request):
+#         print('Test')
+       
+#         if request.method=='POST':
+
+#                 username=os.environ.get('VSPHEREUSERNAME')
+#                 password=os.environ.get('VSPHEREPASSWORD')
+#                 api_host=os.environ.get('API_HOST')
+#                 data=request.data
+#                 print(data)
+                 
+                        
+#                 url=f'https://{api_host}/rest/vcenter/vm'
+                        
+#                 credentials = f"{username}:{password}"
+#                 print(username)
+#                 credentials_encoded = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+
+#                 headers = {'Authorization': f'Basic {credentials_encoded}'}
+                           
+#                 serializer = VmSerializer(data=data)    
+#                 if serializer.is_valid():
+#                         print('hhhhhhhhhhhhhhhhh')
+#                         # 
+#                         response = requests.post(url ,headers=headers,data=data, verify=False)
+#                         print(response.json())
+#                         serializer.save()
+#                         return Response(serializer.data)
 #         return Response("Errrro")
 
-# @api_view(['DELETE'])    
-# def delete_user(request, id):
-#     if request.method=='DELETE':
+################Get details one VM#####################
+
+@api_view(['GET'])
+def get_Onevm(request,pk):
+        print(pk)
+      
+        try:
+                # Vm=get_object_or_404(VMs, idvm=pk)
+                vm = VMs.objects.get(idvm=pk)
+                print(vm)
+        except VMs.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        if request.method=='GET':
+                username=os.environ.get('VSPHEREUSERNAME')
+                password=os.environ.get('VSPHEREPASSWORD')
+                api_host=os.environ.get('API_HOST')
+                url=f'https://{api_host}/rest/vcenter/vm/{vm}'
+                credentials = f"{username}:{password}"
+                credentials_encoded = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+
+                headers = {'Authorization': f'Basic {credentials_encoded}'}
+                serializer=VmSerializer(vm)
+                response = requests.delete(url ,headers=headers, verify=False)
+                print(response.json())
+                print(response.status_code)
+
+                return Response(serializer.data)
+
+
+# ################### Delete one vm#####################
+
+@api_view(['DELETE'])
+def delete_Onevm(request, pk):
+        print(pk)
+        try:
+                vm=get_object_or_404(VMs, idvm=pk)
+                # Vm = VMs.objects.get(idvm=pk)
+                print(vm)
+        except VMs.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        if request.method=='DELETE':
+                username=os.environ.get('VSPHEREUSERNAME')
+                password=os.environ.get('VSPHEREPASSWORD')
+                api_host=os.environ.get('API_HOST')
+                url=f'https://{api_host}/rest/vcenter/vm/{vm}'
+                credentials = f"{username}:{password}"
+                credentials_encoded = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+
+                headers = {'Authorization': f'Basic {credentials_encoded}'}
+                serializer=VmSerializer(vm)
+                print (serializer)
+              
+        
+                
+                response = requests.delete(url ,headers=headers, verify=False)
+                print(response.json())
+                # serializer.delete()
+        return Response("Errrro")
+             
+
+
+###################Update###################
+
+
+
+# @api_view(['PUT'])
+# def update_vm(request, pk):
+#     if request.method=='':
 #         data=request.data
-#         user_obj = MyUser.objects.get(id=id)
-#         user_obj.delete()
-#         return Response("Delete succesffully")
+#         username=os.environ.get('VSPHEREUSERNAME')
+#         password=os.environ.get('VSPHEREPASSWORD')
+#         api_host=os.environ.get('API_HOST')
+       
+#         serializer = VmSerializer(data=data)
+  
+#         url=f'https://{api_host}/rest/vcenter/vm'
+       
+#         data=request.data
+#         credentials = f"{username}:{password}"
+#         credentials_encoded = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+
+#         headers = {'Authorization': f'Basic {credentials_encoded}'}
+        
+#         if serializer.is_valid():
+#             response = requests.post(url ,headers=headers,data=data, verify=False)
+#             print(response.json())
+#             serializer.save()
+#             return Response(serializer.data)
+#     return Response("Errrro")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#     item = itemgetter.objects.get(pk=pk)
+#     serializer = VmSerializer(instance=item, data=request.data)
+ 
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data)
+#     else:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+# @api_view(['DELETE'])
+# def delete_items(request, pk):
+#         if request.method=='DELETE':
+#                 data=request.data
+       
+#         serializer = VmSerializer(data=data)
+  
+#         url=f'https://{api_host}/rest/vcenter/vm'
+       
+#         data=request.data
+#         credentials = f"{username}:{password}"
+#         credentials_encoded = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+
+#         headers = {'Authorization': f'Basic {credentials_encoded}'}
+        
+#         if serializer.is_valid():
+#             response = requests.post(url ,headers=headers,data=data, verify=False)
+#             print(response.json())
+#             serializer.save()
+#             return Response(serializer.data)
+#     return Response("Errrro")
+
+#         item = itemgetter.objects.get(pk=pk)
+#         serializer = VmSerializer(instance=item, data=request.data)
+ 
+#         if serializer.is_valid():
+#                 serializer.delete()
+#                 return Response(serializer.data)
+#         else:
+#                 return Response(status=status.HTTP_404_NOT_FOUND)
+        
+
+
+
+        
+
+
+
+ 
+
 
 
 

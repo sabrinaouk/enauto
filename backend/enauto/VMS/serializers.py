@@ -1,22 +1,42 @@
 from django.db import models
-from .models import VMPlacementSpec ,VMs
+from .models import VMs, spec,placement
 
 from rest_framework import serializers
-class VmSerializer(serializers.ModelSerializer):
+
+class placementSerializer(serializers.ModelSerializer):
+  
     class Meta:
-        model = VMs
-        fields = "__all__"
+        model =placement
+        fields="__all__"
 
-
-class Vmplacement(serializers.ModelSerializer):
-    vm = models.OneToOneField(
-        VMs,
+class specSerializer(serializers.ModelSerializer):
+    placement = models.OneToOneField(
+        placement,
         on_delete=models.CASCADE,
         primary_key=True,
     )
-    vm = VmSerializer()
+    # placement=placementSerializer()
     class Meta:
-        model = VMPlacementSpec
+        model = spec
         fields="__all__"
+
+    
+class VmSerializer(serializers.ModelSerializer):
+    spec = models.OneToOneField(
+        spec,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    # spec=specSerializer()
+    class Meta:
+        model = VMs
+        fields = "__all__"
+    
+
+
+
+
+
+
 
  
