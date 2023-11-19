@@ -26,16 +26,17 @@ class spec(models.Model):
      ) 
 
     guest_OS=models.CharField(max_length=255)
+    placement = models.OneToOneField(placement, on_delete=models.CASCADE, blank=True, null=True) 
+
 class VMs (models.Model):
     idvm= models.UUIDField( 
          primary_key = True, 
          default = uuid.uuid4, 
          editable = False) 
-    # spec = models.ForeignKey(spec, on_delete=models.CASCADE)
     spec = models.OneToOneField(spec, on_delete=models.CASCADE, blank=True, null=True) 
     # name = models.CharField(max_length=255)
     # guest_OS=models.CharField(max_length=255)
                               #choices=guest_os
      
      
-                  #vm = models.ForeignKey('VMs.idvm',on_delete=models.CASCADE,related_name="VMs")
+    #vm = models.ForeignKey('VMs.idvm',on_delete=models.CASCADE,related_name="VMs")

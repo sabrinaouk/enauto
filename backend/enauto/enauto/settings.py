@@ -12,29 +12,34 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASES = {
+
+
+
      'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
-        'USER': 'root',
-        'PASSWORD': 'eED2eFA65GF1GgfAE3ED6DE1HccGGhgh',
-        'HOST': 'roundhouse.proxy.rlwy.net',
-        'PORT': '57360',
+        'NAME': 'vm',
+        'USER':'django',
+        'PASSWORD': 'enauto',
+        'HOST': 'localhost',
+        'PORT':'3360',
+  }
+#      'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'railway',
+#         'USER': 'root',
+#         'PASSWORD': 'eED2eFA65GF1GgfAE3ED6DE1HccGGhgh',
+#         'HOST': 'roundhouse.proxy.rlwy.net',
+#         'PORT': '57360',
 
-    }
-}
+#     }
+ }
 
-#   'default': {
-#     'ENGINE': 'django.db.backends.mysql',
-#     'NAME': os.environ["NAME"],
-#     'USER': os.environ.get("USER"),
-#     'PASSWORD': os.environ.get("PASSWORD"),
-#     'HOST': os.environ.get("HOST"),
-#     'PORT':os.environ.get("PORT"),
-#   }
+#  
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
