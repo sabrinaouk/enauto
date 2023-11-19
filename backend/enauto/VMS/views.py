@@ -26,9 +26,7 @@ def create_vm(request):
         # username=os.environ.get('VSPHEREUSERNAME')
         # password=os.environ.get('VSPHEREPASSWORD')
         # api_host=os.environ.get('API_HOST')
-        api_host = '192.168.0.251'
-        username = 'administrator@vsphere.local'
-        password = 'Time4work!'
+       
         data=request.data
         print(data)
       
@@ -76,9 +74,7 @@ def create_vm(request):
                            
 #                 serializer = VmSerializer(data=data)    
 #                 if serializer.is_valid():
-#                         print('hhhhhhhhhhhhhhhhh')
-#                         # 
-#                         response = requests.post(url ,headers=headers,data=data, verify=False)
+ #                        response = requests.post(url ,headers=headers,data=data, verify=False)
 #                         print(response.json())
 #                         serializer.save()
 #                         return Response(serializer.data)
