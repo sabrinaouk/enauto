@@ -2,10 +2,8 @@ from django.db import models
 from .guestOS import guest_os 
 import uuid 
 
-                              
 
-
-
+ 
 
 class placement(models.Model):
     idplacement= models.UUIDField( 
