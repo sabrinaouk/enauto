@@ -22,7 +22,7 @@ DATABASES = {
 
      'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'vm',
+        'NAME': 'test',
         'USER':'django',
         'PASSWORD': 'enauto',
         'HOST': 'localhost',
